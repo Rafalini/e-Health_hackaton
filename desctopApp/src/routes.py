@@ -1,4 +1,5 @@
 import os
+import pandas as pd
 
 from sqlalchemy import desc
 
@@ -11,6 +12,7 @@ from src.dbmodels import Announcement, Patient, Result
 from flask_login import login_user, current_user, logout_user, login_required
 
 db.create_all()
+
 
 @app.route("/")
 @app.route("/home")
@@ -27,6 +29,14 @@ def home():
         if not os.path.isfile(picture_path):
             post.image_file = 'default.jpg'
     return render_template('home.html', results=paginate)
+
+
+@app.route("/ekg/<int:ekg_id>")
+def ekg(ekg_id):
+    Result.query.get_or_404(ekg_id)
+    df = pd.read_csv(os.getcwd()+"/src/data/ekg_"+str(ekg_id)+".csv", encoding='L7')
+    # print(df.head)
+    return render_template('ekgPopOut.html', time=df.t_msec.tolist(), hr=df.hr.tolist(), display=False)
 
 
 @app.route("/about")
@@ -107,5 +117,3 @@ def reset_request():
         # flash(send_reset_email(user), 'info')
         return redirect(url_for('login'))
     return render_template('resetRequest.html', title='Reset Password', form=form)
-
-

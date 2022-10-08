@@ -14,16 +14,32 @@
     {% if entry.id % 2 == 0 %}
     <tr class="table-primary">
         <th scope="row">Primary</th>
+        <td>
+            <div class="card text-white bg-danger mb-3" style="max-width: 20rem;">
+                <div class="card-header">Header</div>
+                <div class="card-body">
+                    <h4 class="card-title">Danger card title</h4>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
+                        card's content.</p>
+                </div>
+        </td>
         <td>Column content</td>
-        <td>Column content</td>
-        <td>Column content</td>
+        <td>
+            <button type="button" class="btn btn-primary"
+                    onclick="window.location.href='{{ url_for('ekg', ekg_id=entry.id) }}';">View EKG
+            </button>
+        </td>
     </tr>
     {% else %}
     <tr class="table-secondary">
         <th scope="row">Secondary</th>
         <td>Column content</td>
         <td>Column content</td>
-        <td>Column content</td>
+        <td>
+            <button type="button" class="btn btn-primary"
+                    onclick="window.location.href='{{ url_for('ekg', ekg_id=entry.id) }}';">View EKG
+            </button>
+        </td>
     </tr>
     {% endif %}
     {% endfor %}
