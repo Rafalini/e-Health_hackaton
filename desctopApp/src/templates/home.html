@@ -1,43 +1,179 @@
 {% extends "layout.html" %}
 {% block content %}
-<table class="table table-hover">
+<table class="table table-hover" xmlns:width="http://www.w3.org/1999/xhtml">
     <thead>
     <tr>
-        <th scope="col">Type</th>
-        <th scope="col">Column heading</th>
-        <th scope="col">Column heading</th>
-        <th scope="col">Column heading</th>
+        <th scope="col">Dane pacjenta</th>
+        <th scope="col">Stan pacjenta</th>
+        <th scope="col">Data ostatniej synchronizacji</th>
+        <th scope="col">Szczegóły</th>
     </tr>
     </thead>
     <tbody>
-    {% for entry in results.items %}
-    {% if entry.id % 2 == 0 %}
+    {% for entry in results %}
+    {% if entry.number % 2 == 0 %}
     <tr class="table-primary">
-        <th scope="row">Primary</th>
+        <th scope="row">
+            <div>{{entry.owner.username}}</div>
+            <p>Wiek pacjenta: {{entry.owner.age}}</p></th>
         <td>
+            {% if 0 < entry.status and entry.status <= 2 %}
             <div class="card text-white bg-danger mb-3" style="max-width: 20rem;">
-                <div class="card-header">Header</div>
+                <div class="card-header">{{entry.title}}</div>
                 <div class="card-body">
-                    <h4 class="card-title">Danger card title</h4>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                        card's content.</p>
+                    <p class="card-text">{{entry.content}}</p>
                 </div>
+            </div>
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar"
+                     aria-valuenow="{{entry.status}}" aria-valuemin="0" aria-valuemax="10"
+                     style="width: {{entry.status*10}}%;"></div>
+            </div>
+            {% elif 2 < entry.status and entry.status <= 4 %}
+            <div class="card text-white bg-warning mb-3" style="max-width: 20rem;">
+                <div class="card-header">{{entry.title}}</div>
+                <div class="card-body">
+                    <p class="card-text">{{entry.content}}</p>
+                </div>
+            </div>
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning" role="progressbar"
+                     aria-valuenow="{{entry.status}}" aria-valuemin="0" aria-valuemax="10"
+                     style="width: {{entry.status*10}}%;"></div>
+            </div>
+            {% elif 4 < entry.status and entry.status <= 6 %}
+            <div class="card text-white bg-primary mb-3" style="max-width: 20rem;">
+                <div class="card-header">{{entry.title}}</div>
+                <div class="card-body">
+                    <p class="card-text">{{entry.content}}</p>
+                </div>
+            </div>
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated border-success" role="progressbar"
+                     aria-valuenow="{{entry.status}}" aria-valuemin="0" aria-valuemax="10"
+                     style="width: {{entry.status*10}}%;"></div>
+            </div>
+            {% elif 6 < entry.status and entry.status <= 8 %}
+            <div class="card text-white bg-info mb-3" style="max-width: 20rem;">
+                <div class="card-header">{{entry.title}}</div>
+                <div class="card-body">
+                    <p class="card-text">{{entry.content}}</p>
+                </div>
+            </div>
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar"
+                     aria-valuenow="{{entry.status}}" aria-valuemin="0" aria-valuemax="10"
+                     style="width: {{entry.status*10}}%;"></div>
+            </div>
+            {% else %}
+            <div class="card border-success mb-3" style="max-width: 20rem;">
+                <div class="card-header">{{entry.title}}</div>
+                <div class="card-body">
+                    <p class="card-text">{{entry.content}}</p>
+                </div>
+            </div>
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated border-success bg-success"
+                     role="progressbar"
+                     aria-valuenow="{{entry.status}}" aria-valuemin="0" aria-valuemax="10"
+                     style="width: {{entry.status*10}}%;"></div>
+            </div>
+            {% endif %}
         </td>
-        <td>Column content</td>
+        <td><p class="text-muted">{{ entry.date_posted.strftime('%Y-%m-%d %H:%M:%S') }}</p></td>
         <td>
-            <button type="button" class="btn btn-primary"
-                    onclick="window.location.href='{{ url_for('ekg', ekg_id=entry.id) }}';">View EKG
+            <button type="button" class="btn btn-primary" style="width: 200px;"
+                    onclick="window.location.href='{{ url_for('ekg', ekg_id=entry.id) }}';">Podgląd ostatniego EKG
+            </button>
+            <button type="button" class="btn btn-primary" style="margin-top: 10px; width: 200px;"
+                    onclick="window.location.href='{{ url_for('hr', hr_id=entry.id) }}';">Odczyt pulsu
+            </button>
+            <hr>
+            <button type="button" class="btn btn-info" style="width: 200px;"
+                    onclick="window.location.href='{{ url_for('account') }}';">Szczegóły pacjenta
             </button>
         </td>
     </tr>
     {% else %}
     <tr class="table-secondary">
-        <th scope="row">Secondary</th>
-        <td>Column content</td>
-        <td>Column content</td>
+        <th scope="row">
+            <div>{{entry.owner.username}}</div>
+            <p>Wiek pacjenta: {{entry.owner.age}}</p></th>
         <td>
-            <button type="button" class="btn btn-primary"
-                    onclick="window.location.href='{{ url_for('ekg', ekg_id=entry.id) }}';">View EKG
+            {% if 0 < entry.status and entry.status <= 2 %}
+            <div class="card text-white bg-danger mb-3" style="max-width: 20rem;">
+                <div class="card-header">{{entry.title}}</div>
+                <div class="card-body">
+                    <p class="card-text">{{entry.content}}</p>
+                </div>
+            </div>
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar"
+                     aria-valuenow={{entry.status}} aria-valuemin="0" aria-valuemax="10"
+                     style="width: {{entry.status*10}}%;"></div>
+            </div>
+            {% elif 2 < entry.status and entry.status <= 4 %}
+            <div class="card text-white bg-warning mb-3" style="max-width: 20rem;">
+                <div class="card-header">{{entry.title}}</div>
+                <div class="card-body">
+                    <p class="card-text">{{entry.content}}</p>
+                </div>
+            </div>
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning" role="progressbar"
+                     aria-valuenow={{entry.status}} aria-valuemin="0" aria-valuemax="10"
+                     style="width: {{entry.status*10}}%;"></div>
+            </div>
+            {% elif 4 < entry.status and entry.status <= 6 %}
+            <div class="card text-white bg-primary mb-3" style="max-width: 20rem;">
+                <div class="card-header">{{entry.title}}</div>
+                <div class="card-body">
+                    <p class="card-text">{{entry.content}}</p>
+                </div>
+            </div>
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated border-success" role="progressbar"
+                     aria-valuenow={{entry.status}} aria-valuemin="0" aria-valuemax="10"
+                     style="width: {{entry.status*10}}%;"></div>
+            </div>
+            {% elif 6 < entry.status and entry.status <= 8 %}
+            <div class="card text-white bg-info mb-3" style="max-width: 20rem;">
+                <div class="card-header">{{entry.title}}</div>
+                <div class="card-body">
+                    <p class="card-text">{{entry.content}}</p>
+                </div>
+            </div>
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar"
+                     aria-valuenow={{entry.status}} aria-valuemin="0" aria-valuemax="10"
+                     style="width: {{entry.status*10}}%;"></div>
+            </div>
+            {% else %}
+            <div class="card border-success mb-3" style="max-width: 20rem;">
+                <div class="card-header">{{entry.title}}</div>
+                <div class="card-body">
+                    <p class="card-text">{{entry.content}}</p>
+                </div>
+            </div>
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated border-success bg-success"
+                     role="progressbar"
+                     aria-valuenow={{entry.status}} aria-valuemin="0" aria-valuemax="10"
+                     style="width: {{entry.status*10}}%;"></div>
+            </div>
+            {% endif %}
+        </td>
+        <td><p class="text-muted">{{ entry.date_posted.strftime('%Y-%m-%d %H:%M:%S') }}</p></td>
+        <td>
+            <button type="button" class="btn btn-primary" style="width: 200px;"
+                    onclick="window.location.href='{{ url_for('ekg', ekg_id=entry.id) }}';">Podgląd ostatniego EKG
+            </button>
+            <button type="button" class="btn btn-primary" style="margin-top: 10px; width: 200px;"
+                    onclick="window.location.href='{{ url_for('hr', hr_id=entry.id) }}';">Podgląd odczytu pulsu
+            </button>
+            <hr>
+            <button type="button" class="btn btn-info" style="width: 200px;"
+                    onclick="window.location.href='{{ url_for('account') }}';">Szczegóły pacjenta
             </button>
         </td>
     </tr>

@@ -1,6 +1,12 @@
 {% extends "layoutNoSide.html" %}
 {% block content %}
 
+<h3>
+  Odczyt EKG z ostatniego badania pacjenta:
+  <small class="text-muted">{{result.owner.username}}</small>
+</h3>
+<p class="lead">Dane z dnia: {{result.date_posted.strftime('%Y-%m-%d %H:%M:%S')}}</p>
+
 <div id="myDiv" style="height: 800px; width:1100px;">
 </div>
 
@@ -17,7 +23,40 @@ var trace1 = {
 }
 var data = [trace1];
 
-Plotly.newPlot('myDiv', data);
+var layout = {
+  title: 'EKG',
+  xaxis: {
+    autorange: true,
+    range: [86.8700008333, 138.870004167],
+    rangeselector: {buttons: [
+        {
+          count: 1,
+          label: '1m',
+          step: 'month',
+          stepmode: 'backward'
+        },
+        {
+          count: 6,
+          label: '6m',
+          step: 'month',
+          stepmode: 'backward'
+        },
+        {step: 'all'}
+      ]},
+    rangeslider: {range: [86.8700008333, 138.870004167]},
+    type: 'linear'
+  },
+  yaxis: {
+    autorange: true,
+    range: [86.8700008333, 138.870004167],
+    type: 'linear'
+  }
+};
+
+Plotly.newPlot('myDiv', data, layout);
+
+
+
 </script>
 
 {% endblock content %}

@@ -23,6 +23,8 @@ class Doctor(db.Model, UserMixin):
 class Patient(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
+    age = db.Column(db.Integer, nullable=False, default=45)
+    phone = db.Column(db.String(15), nullable=False, default="+48 111 222 333")
     email = db.Column(db.String(120), unique=True, nullable=False)
     image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     password = db.Column(db.String(60), nullable=False)
@@ -30,19 +32,23 @@ class Patient(db.Model, UserMixin):
     medicalResults = db.relationship('Result', backref='owner', lazy=True)
 
     def __repr__(self):
-        return f"Patient('{self.id}', '{self.username}', '{self.email}', '{self.image_file}')"
+        return f"Patient('{self.id}', {self.phone})"
 
 
 class Result(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    title = db.Column(db.String(100), nullable=False)
     content = db.Column(db.Text, nullable=False)
+    status = db.Column(db.Integer, nullable=False)
+    number = db.Column(db.Integer, nullable=True)
     image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
-    user_id = db.Column(db.Integer, db.ForeignKey('patient.id'), nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('patient.id'), nullable=False)
 
     def __repr__(self):
-        return f"Result('{self.id}', '{self.title}', '{self.user_id}')"
+        return f"Result('{self.id}', '{self.title}', '{self.user_id}','{self.date_posted}')"
+
 
 
 class Announcement(db.Model):

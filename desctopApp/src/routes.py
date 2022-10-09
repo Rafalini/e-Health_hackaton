@@ -17,26 +17,29 @@ db.create_all()
 @app.route("/")
 @app.route("/home")
 def home():
-    page = request.args.get('page', 1, type=int)
-    if current_user == "doctor":
-        paginate = Patient.query.order_by(desc('id')).paginate(page=page, per_page=5)
-    else:
-        paginate = Result.query.order_by(desc('id')).paginate(page=page, per_page=5)
-    paginate.items.sort(key=lambda x: x.date_posted, reverse=True)
-    print(paginate)
-    for post in paginate.items:
-        picture_path = os.path.join(app.root_path, 'static/post_imgs', post.image_file)
-        if not os.path.isfile(picture_path):
-            post.image_file = 'default.jpg'
-    return render_template('home.html', results=paginate)
+    patients = Patient.query.all()
+    data = []
+    iter = 0
+    for patinet in patients:
+        iter += 1
+        res = Result.query.filter_by(user_id=patinet.id).first()
+        if res is not None:
+            res.number = iter
+            data.append(res)
+    return render_template('home.html', results=data)
 
 
 @app.route("/ekg/<int:ekg_id>")
 def ekg(ekg_id):
-    Result.query.get_or_404(ekg_id)
+    result = Result.query.get_or_404(ekg_id)
     df = pd.read_csv(os.getcwd()+"/src/data/ekg_"+str(ekg_id)+".csv", encoding='L7')
-    # print(df.head)
-    return render_template('ekgPopOut.html', time=df.t_msec.tolist(), hr=df.hr.tolist(), display=False)
+    return render_template('ekgPopOut.html', time=df.time.tolist(), hr=df.hr.tolist(), result=result, display=False)
+
+@app.route("/hr/<int:hr_id>")
+def hr(hr_id):
+    result = Result.query.get_or_404(hr_id)
+    df = pd.read_csv(os.getcwd()+"/src/data/hr_"+str(hr_id)+".csv", encoding='L7')
+    return render_template('heartRate.html', time=df.time.tolist(), hr=df.hr.tolist(), result=result, display=False)
 
 
 @app.route("/about")
@@ -73,7 +76,7 @@ def login():
             return redirect(next_page) if next_page else redirect(url_for('home'))
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
-    return render_template('login.html', title='Login', form=form)
+    return render_template('login.html', title='Zaloguj się', form=form)
 
 
 @app.route("/logout")
@@ -97,6 +100,7 @@ def account():
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.email.data = current_user.email
+        form.phone.data = current_user.phone
     image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
     return render_template('account.html', title='Account',
                            image_file=image_file, form=form)

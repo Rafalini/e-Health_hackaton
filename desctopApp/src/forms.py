@@ -39,14 +39,15 @@ class PatientRegistrationForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    remember = BooleanField('Remember Me')
+    password = PasswordField('Hasło', validators=[DataRequired()])
+    remember = BooleanField('Zapamiętaj mnie')
     submit = SubmitField('Login')
 
 
 class UpdateAccountForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
+    username = StringField('Imię i nazwisko', validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('Email', validators=[DataRequired(), Email()])
+    phone = StringField('Numer telefonu', validators=[DataRequired()])
     picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
     submit = SubmitField('Update')
 
